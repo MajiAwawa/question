@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>選択肢Webアプリ</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+    }
+    button {
+      margin: 5px;
+    }
+    .selected {
+      background-color: #2196F3;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>選択肢Webアプリ</h1>
+  <div id="choices">
+    <div id="choice-set-1">
+      <button id="選択肢1">選択肢1</button>
+      <button id="選択肢2">選択肢2</button>
+    </div>
+  </div>
+  <p id="result"></p>
+  <button id="reset" style="display: none;">リセット</button>
+
+  <script>
+    const totalSteps = 5;
+    let currentStep = 1;
+    let results = [];
+
+    const choices = [
+      ['選択肢1', '選択肢2'],
+      ['選択肢3', '選択肢4'],
+      ['選択肢5', '選択肢6'],
+      ['選択肢7', '選択肢8'],
+      ['選択肢9', '選択肢10'],
+    ];
+
+    function handleChoice(choice) {
+      if (!results[currentStep - 1]) {
+        results[currentStep - 1] = choice;
+        document.getElementById(choice).classList.add('selected');
+        if (currentStep < totalSteps) {
+          showNextChoices();
+        } else {
+          showResults();
+        }
+      }
+    }
+
+    function showNextChoices() {
+      currentStep++;
+      const nextChoices = choices[currentStep - 1];
+      const choiceDiv = document.getElementById('choices');
+      const choiceSet = document.createElement('div');
+      choiceSet.id = `choice-set-${currentStep}`;
+      choiceDiv.appendChild(document.createElement('br'));
+      choiceDiv.appendChild(document.createTextNode(`テキスト${currentStep}`));
+      choiceDiv.appendChild(document.createElement('br'));
+      nextChoices.forEach((choice) => {
+        const button = document.createElement('button');
+        button.id = choice;
+        button.innerText = choice;
+        choiceSet.appendChild(button);
+        button.addEventListener('click', () => {
+          handleChoice(choice);
+        });
+      });
+      choiceDiv.appendChild(choiceSet);
+    }
+
+    function addButtonListenersToChoices(choices) {
+      choices.forEach((choice) => {
+        document.getElementById(choice).addEventListener('click', () => {
+          handleChoice(choice);
+        });
+      });
+    }
+
+    function showResults() {
+      document.getElementById('result').innerHTML = '結果: ' + results.join(', ');
+      document.getElementById('reset').style.display = 'block';
+    }
+
+    function reset() {
+      currentStep = 1;
+      results = [];
+      document.getElementById('choices').innerHTML = `
+        <div id="choice-set-1">
+          <button id="選択肢1">選択肢1</button>
+          <button id="選択肢2">選択肢2</button>
+        </div>
+      `;
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('reset').style.display = 'none';
+      addButtonListenersToChoices(['選択肢1', '選択肢2']);
+    }
+
+    addButtonListenersToChoices(['選択肢1', '選択肢2']);
+    document.getElementById('reset').addEventListener('click', reset);
+  </script>
+</body>
+</html>
